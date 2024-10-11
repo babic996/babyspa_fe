@@ -177,7 +177,7 @@ const HomePage = () => {
         <Form onFinish={handleSubmit(onSubmit)} {...layout}>
           {!isEditReservation && (
             <Form.Item
-              label="Odaberi paket usluge"
+              label="Odaberi aranžman"
               validateStatus={errors.arrangementId ? "error" : ""}
               help={errors.arrangementId?.message}
             >
@@ -219,7 +219,7 @@ const HomePage = () => {
                 render={({ field: { onChange, value } }) => (
                   <DatePicker
                     showTime
-                    value={value ? dayjs(value, "YYYY-MM-DD") : null}
+                    value={value ? dayjs(value, "YYYY-MM-DD HH:mm:ss") : null}
                     onChange={(date) =>
                       onChange(
                         date ? dayjs(date).format("YYYY-MM-DDTHH:mm:ss") : ""
