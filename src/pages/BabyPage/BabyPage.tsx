@@ -33,6 +33,7 @@ import {
   toastSuccessNotification,
 } from "../../util/toastNotification";
 import FilterComponent from "../../components/FilterComponent/FilterComponent";
+import { useFilter } from "../../context/Filter/useFilter";
 
 const BabyPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -43,6 +44,7 @@ const BabyPage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentNote, setCurrentNote] = useState<string>("");
   const [isInfoModalVisible, setIsInfoModalVisible] = useState<boolean>(false);
+  const { filter } = useFilter();
 
   const {
     control,
@@ -58,7 +60,7 @@ const BabyPage = () => {
   //------------------LIFECYCLE------------------
 
   useEffect(() => {
-    getBabies(cursor - 1)
+    getBabies(cursor - 1, filter)
       .then((result) => {
         setBabies(result.data.content);
         setTotalElements(result.data.totalElements);
@@ -67,7 +69,7 @@ const BabyPage = () => {
       .catch((e) => {
         toastErrorNotification(e.response.data.message);
       });
-  }, [cursor]);
+  }, [cursor, filter]);
 
   //------------------METOHDS------------------
 
@@ -81,7 +83,7 @@ const BabyPage = () => {
     if (babyId) {
       setLoading(true);
       deleteBaby(babyId).then(() => {
-        getBabies(cursor - 1)
+        getBabies(cursor - 1, null)
           .then((result) => {
             setLoading(false);
             setBabies(result.data.content);
@@ -158,7 +160,7 @@ const BabyPage = () => {
     } else {
       addBaby(data)
         .then(() => {
-          getBabies(cursor - 1)
+          getBabies(cursor - 1, null)
             .then((result) => {
               setLoading(false);
               setBabies(result.data.content);
@@ -405,7 +407,11 @@ const BabyPage = () => {
             Dodaj Bebu
           </Button>
         </div>
-        <FilterComponent showSearch={true} showRangePicker={true} />
+        <FilterComponent
+          showSearch={true}
+          showRangePicker={true}
+          showTimeInRangePicker={false}
+        />
         <Table
           columns={columns}
           loading={loading}

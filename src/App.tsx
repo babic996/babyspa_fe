@@ -6,21 +6,24 @@ import BabyPage from "./pages/BabyPage/BabyPage";
 import ArrangementPage from "./pages/ArrangementPage/ArrangementPage";
 import { ToastContainer } from "react-toastify";
 import ServicePackagePage from "./pages/ServicePackagePage/ServicePackagePage";
+import { FilterProvider } from "./context/Filter/FilterProvider";
 
 function App() {
   return (
     <>
-      <ToastContainer />
-      <Router>
-        <Routes>
-          <Route path="/" element={<Layout />}>
-            <Route index element={<HomePage />} />
-            <Route path="/baby" element={<BabyPage />} />
-            <Route path="/service-package" element={<ServicePackagePage />} />
-            <Route path="/arrangement" element={<ArrangementPage />} />
-          </Route>
-        </Routes>
-      </Router>
+      <FilterProvider>
+        <ToastContainer />
+        <Router>
+          <Routes>
+            <Route path="/" element={<Layout />}>
+              <Route index element={<HomePage />} />
+              <Route path="/baby" element={<BabyPage />} />
+              <Route path="/service-package" element={<ServicePackagePage />} />
+              <Route path="/arrangement" element={<ArrangementPage />} />
+            </Route>
+          </Routes>
+        </Router>
+      </FilterProvider>
     </>
   );
 }
