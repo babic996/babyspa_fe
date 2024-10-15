@@ -30,6 +30,7 @@ import {
 import { useForm, Controller } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import InfoModal from "../../components/InfoModal/InfoModal";
+import { useFilter } from "../../context/Filter/useFilter";
 
 const ServicePackagePage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -43,6 +44,7 @@ const ServicePackagePage = () => {
   const [loading, setLoading] = useState<boolean>(true);
   const [currentNote, setCurrentNote] = useState<string>("");
   const [isInfoModalVisible, setIsInfoModalVisible] = useState<boolean>(false);
+  const { filter } = useFilter();
 
   const {
     control,
@@ -60,7 +62,7 @@ const ServicePackagePage = () => {
   //------------------LIFECYCLE------------------
 
   useEffect(() => {
-    getServicePackages(cursor - 1)
+    getServicePackages(cursor - 1, filter)
       .then((result) => {
         setServicePackages(result.data.content);
         setTotalElements(result.data.totalElements);
@@ -69,7 +71,7 @@ const ServicePackagePage = () => {
       .catch((e) => {
         toastErrorNotification(e.response.data.message);
       });
-  }, [cursor]);
+  }, [cursor, filter]);
 
   //------------------METHODS----------------
 
@@ -87,7 +89,7 @@ const ServicePackagePage = () => {
     if (servicePackageId) {
       setLoading(true);
       deleteServicePackage(servicePackageId).then(() => {
-        getServicePackages(cursor - 1)
+        getServicePackages(cursor - 1, null)
           .then((result) => {
             setLoading(false);
             setServicePackages(result.data.content);
@@ -159,7 +161,7 @@ const ServicePackagePage = () => {
     } else {
       addServicePackage(data)
         .then(() => {
-          getServicePackages(cursor - 1)
+          getServicePackages(cursor - 1, null)
             .then((result) => {
               setLoading(false);
               setServicePackages(result.data.content);
@@ -369,7 +371,7 @@ const ServicePackagePage = () => {
             Dodaj paket usluge
           </Button>
         </div>
-        <FilterComponent showSearch={true} />
+        <FilterComponent showSearch={true} showPriceSlider={true} />
         <Table
           columns={columns}
           loading={loading}

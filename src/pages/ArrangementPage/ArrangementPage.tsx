@@ -564,7 +564,17 @@ const ArrangementPage = () => {
             Dodaj aranžman
           </Button>
         </div>
-        <FilterComponent showSearch={true} showRangePicker={true} />
+        <FilterComponent
+          showSearch={true}
+          showRangePicker={true}
+          showSelectBebies={true}
+          showPriceSlider={true}
+          showSelectServicePackages={true}
+          showPaymentTypeSelect={true}
+          showStatusSelect={true}
+          statusTypeCode="arrangement"
+          showRemainingTerm={true}
+        />
         <Table
           columns={columns}
           loading={loading}
