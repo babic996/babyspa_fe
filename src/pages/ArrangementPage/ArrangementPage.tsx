@@ -40,6 +40,7 @@ import { DiscountInterface } from "../../interfaces/DiscountInterface";
 import { getDiscountList } from "../../services/DiscountService";
 import { PaymentTypeInterface } from "../../interfaces/PaymentTypeInterface";
 import { getPaymentTypeList } from "../../services/PaymentTypeService";
+import { useFilter } from "../../context/Filter/useFilter";
 
 const ArrangementPage = () => {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
@@ -60,6 +61,7 @@ const ArrangementPage = () => {
   const [currentNote, setCurrentNote] = useState<string>("");
   const [isInfoModalVisible, setIsInfoModalVisible] = useState<boolean>(false);
   const [hidePaymentType, setHidePaymentType] = useState<boolean>(false);
+  const { filter } = useFilter();
 
   const {
     control,
@@ -72,7 +74,7 @@ const ArrangementPage = () => {
   //------------------LIFECYCLE------------------
 
   useEffect(() => {
-    getArrangements(cursor - 1)
+    getArrangements(cursor - 1, filter)
       .then((result) => {
         setArrangements(result.data.content);
         setTotalElements(result.data.totalElements);
@@ -81,7 +83,7 @@ const ArrangementPage = () => {
       .catch((e) => {
         toastErrorNotification(e.response.data.message);
       });
-  }, [cursor]);
+  }, [cursor, filter]);
 
   useEffect(() => {
     Promise.all([
@@ -123,7 +125,7 @@ const ArrangementPage = () => {
     if (arrangementId) {
       setLoading(true);
       deleteArrangement(arrangementId).then(() => {
-        getArrangements(cursor - 1)
+        getArrangements(cursor - 1, null)
           .then((result) => {
             setLoading(false);
             setArrangements(result.data.content);
@@ -196,7 +198,7 @@ const ArrangementPage = () => {
     } else {
       addArrangement(data)
         .then(() => {
-          getArrangements(cursor - 1)
+          getArrangements(cursor - 1, null)
             .then((result) => {
               setLoading(false);
               setArrangements(result.data.content);
@@ -565,7 +567,6 @@ const ArrangementPage = () => {
           </Button>
         </div>
         <FilterComponent
-          showSearch={true}
           showRangePicker={true}
           showSelectBebies={true}
           showPriceSlider={true}

@@ -1,12 +1,46 @@
 import { baseRequest } from "../util/useAxios";
 import { DEFAULT_PAGE_SIZE } from "../util/const";
 import { CreateOrUpdateArrangementInterface } from "../interfaces/ArrangementInterface";
+import { FilterInterface } from "../interfaces/FilterInterface";
 
-export const getArrangements = async (cursor: number | null) => {
+export const getArrangements = async (
+  cursor: number | null,
+  filter: FilterInterface | null
+) => {
   const request = baseRequest();
+  let filterString = "";
+
+  if (filter?.remainingTerm != undefined) {
+    filterString += `&remainingTerm=${filter.remainingTerm}`;
+  }
+
+  if (filter?.startPrice) {
+    filterString += `&startPrice=${filter.startPrice}`;
+  }
+
+  if (filter?.endPrice) {
+    console.log("DA");
+    filterString += `&endPrice=${filter.endPrice}`;
+  }
+
+  if (filter?.babyId) {
+    filterString += `&babyId=${filter.babyId}`;
+  }
+
+  if (filter?.paymentTypeId) {
+    filterString += `&paymentTypeId=${filter.paymentTypeId}`;
+  }
+
+  if (filter?.servicePackageId) {
+    filterString += `&servicePackageId=${filter.servicePackageId}`;
+  }
+
+  if (filter?.statusId) {
+    filterString += `&statusId=${filter.statusId}`;
+  }
 
   const result = await request({
-    url: `/arrangement/find-all?page=${cursor}&size=${DEFAULT_PAGE_SIZE}`,
+    url: `/arrangement/find-all?page=${cursor}&size=${DEFAULT_PAGE_SIZE}${filterString}`,
     method: "get",
   });
 

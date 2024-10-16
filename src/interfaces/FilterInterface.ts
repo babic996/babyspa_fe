@@ -4,4 +4,9 @@ export interface FilterInterface {
   searchText?: string | null;
   startPrice?: number | null;
   endPrice?: number | null;
+  statusId?: number | null;
+  babyId?: number | null;
+  paymentTypeId?: number | null;
+  servicePackageId?: number | null;
+  remainingTerm?: number | null;
 }

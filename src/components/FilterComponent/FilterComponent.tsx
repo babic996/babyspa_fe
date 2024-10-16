@@ -1,18 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
-import { Input, DatePicker, Select, Slider, InputNumber } from "antd";
+import { Input, DatePicker, Select, InputNumber, ConfigProvider } from "antd";
 import { useFilter } from "../../context/Filter/useFilter";
 import { Dayjs } from "dayjs";
 import debounce from "lodash/debounce";
-import {
-  getMaxPriceServicePackage,
-  getServicePackagesList,
-} from "../../services/ServicePackageService";
+import { getServicePackagesList } from "../../services/ServicePackageService";
 import { getBabiesList } from "../../services/BabyService";
 import { ShortDetailsInterface } from "../../interfaces/ShortDetails";
 import { getPaymentTypeList } from "../../services/PaymentTypeService";
 import { PaymentTypeInterface } from "../../interfaces/PaymentTypeInterface";
 import { getStatusList } from "../../services/StatusService";
 import { StatusInterface } from "../../interfaces/StatusInterface";
+import { AiOutlineArrowRight } from "react-icons/ai";
 const { RangePicker } = DatePicker;
 
 interface FilterComponentProps {
@@ -43,7 +41,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   statusTypeCode,
 }) => {
   const { setFilter } = useFilter();
-  const [maxPriceSlider, setMaxPriceSlider] = useState<number>(0);
   const [babies, setBabies] = useState<ShortDetailsInterface[]>([]);
   const [servicePackages, setServicePackages] = useState<
     ShortDetailsInterface[]
@@ -52,7 +49,6 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
   const [statuses, setStatuses] = useState<StatusInterface[]>([]);
 
   useEffect(() => {
-    getMaxPriceServicePackage().then((res) => setMaxPriceSlider(res));
     getBabiesList().then((res) => setBabies(res));
     getServicePackagesList().then((res) => setServicePackages(res));
     getPaymentTypeList().then((res) => setPaymentType(res));
@@ -90,11 +86,17 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
     handleSearchChange(value);
   };
 
-  const onChangeSlider = (value: number[]) => {
+  const handleStartPriceChange = (value: number | null) => {
     setFilter((prev) => ({
       ...prev,
-      startPrice: value[0],
-      endPrice: value[1],
+      startPrice: value,
+    }));
+  };
+
+  const handleEndPriceChange = (value: number | null) => {
+    setFilter((prev) => ({
+      ...prev,
+      endPrice: value,
     }));
   };
 
@@ -159,11 +161,15 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
             flexShrink: 0,
           }}
         >
-          <RangePicker
-            format={showTimeInRangePicker ? "DD.MM.YYYY. HH:mm" : "DD.MM.YYYY."}
-            onChange={handleRangeChange}
-            style={{ width: "100%" }}
-          />
+          <ConfigProvider>
+            <RangePicker
+              format={
+                showTimeInRangePicker ? "DD.MM.YYYY. HH:mm" : "DD.MM.YYYY."
+              }
+              onChange={handleRangeChange}
+              style={{ width: "100%" }}
+            />
+          </ConfigProvider>
         </div>
       )}
       {showSelectBebies && (
@@ -309,22 +315,26 @@ const FilterComponent: React.FC<FilterComponentProps> = ({
       {showPriceSlider && (
         <div
           style={{
+            display: "flex",
+            alignItems: "center",
             width: "20%",
             marginRight: 20,
             marginBottom: 16,
             flexShrink: 0,
           }}
         >
-          <div style={{ marginBottom: 0, textAlign: "center" }}>
-            <span style={{ fontSize: 14 }}>Raspon cijene</span>
-          </div>
-          <Slider
-            range
-            min={0}
-            max={maxPriceSlider}
+          <InputNumber
+            placeholder="Cijena od"
+            onChange={handleStartPriceChange}
             step={0.1}
-            defaultValue={[0, 30.0]}
-            onChange={onChangeSlider}
+            style={{ flex: 1 }}
+          />
+          <AiOutlineArrowRight style={{ margin: "0 12px" }} />
+          <InputNumber
+            placeholder="Cijena do"
+            onChange={handleEndPriceChange}
+            step={0.1}
+            style={{ flex: 1 }}
           />
         </div>
       )}

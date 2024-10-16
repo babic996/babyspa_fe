@@ -1,17 +1,16 @@
-import { Calendar, momentLocalizer } from "react-big-calendar";
-import moment from "moment";
-import "moment/dist/locale/bs";
+import { Calendar, dayjsLocalizer } from "react-big-calendar";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import {
   CreateOrUpdateReservationInterface,
   OverviewReservationInterface,
 } from "../../interfaces/ReservationInterface";
 import dayjs from "dayjs";
+import "dayjs/locale/bs";
 import { convertOverviewReservationInterfaceToCreateOrUpdateReservationInterface } from "../../mappers/ReservationMapper";
 import { calendarMessages } from "../../util/const";
-moment.locale("bs");
+dayjs.locale("bs");
 
-const localizer = momentLocalizer(moment);
+const localizer = dayjsLocalizer(dayjs);
 
 interface CalendarComponentProps {
   reservations?: OverviewReservationInterface[];
